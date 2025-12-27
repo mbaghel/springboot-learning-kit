@@ -46,6 +46,8 @@ dependencies {
 	def openApiSpringDocsVersion = '2.8.6'
 	def testContainerRabbitMQVersion = '1.21.2'
 
+	implementation 'com.sun.mail:jakarta.mail:2.0.2'
+
 	implementation "org.springframework.boot:spring-boot-starter-activemq:${springBootVersion}"
 	implementation "org.springframework.boot:spring-boot-starter-amqp:${springBootVersion}"
 	implementation "org.springframework.boot:spring-boot-starter-actuator:${springBootVersion}"

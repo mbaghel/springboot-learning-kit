@@ -1,13 +1,52 @@
 package com.springboot.learning.kit.service;
 
+import com.springboot.learning.kit.domain.Order;
+import com.springboot.learning.kit.domain.OrderItem;
+import com.springboot.learning.kit.dto.response.OrderItemStatusResponse;
+import com.springboot.learning.kit.dto.response.OrderStatusResponse;
+import com.springboot.learning.kit.exception.OrderNotFoundException;
+import com.springboot.learning.kit.repository.OrderItemRepository;
+import com.springboot.learning.kit.repository.OrderRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class OrderStatusService {
 
+    private final OrderRepository orderRepository;
+    private final OrderItemRepository orderItemRepository;
+
     public void saveOrderStatus() {
 
+    }
+
+    public OrderStatusResponse getOrderStatus(Long uuid) {
+        Order order = orderRepository.findById(uuid)
+                .orElseThrow(() -> new OrderNotFoundException("Order not found with UUID: " + uuid));
+
+        List<OrderItem> orderItems = orderItemRepository.findByOrderId(uuid);
+
+        if (orderItems.isEmpty()) {
+            throw new OrderNotFoundException("No order items found for order with UUID: " + uuid);
+        }
+
+        return OrderStatusResponse.builder()
+                .orderId(uuid)
+                .orderType(order.getOrderType().name())
+                .items(convertEntityToDTO(orderItems))
+                .build();
+    }
+
+    private List<OrderItemStatusResponse> convertEntityToDTO(List<OrderItem> orderItems) {
+        return orderItems.stream()
+                .map(orderItem -> OrderItemStatusResponse.builder()
+                        .productId(orderItem.getProductId())
+                        .quantity(orderItem.getQuantity())
+                        .status(orderItem.getStatus())
+                        .build())
+                .toList();
     }
 }
