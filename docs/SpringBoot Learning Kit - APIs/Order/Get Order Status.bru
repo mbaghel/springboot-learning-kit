@@ -1,0 +1,20 @@
+meta {
+  name: Get Order Status
+  type: http
+  seq: 2
+}
+
+get {
+  url: http://localhost:8080/OrderService/order/status/:uuid
+  body: none
+  auth: inherit
+}
+
+params:path {
+  uuid: 123456
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}
